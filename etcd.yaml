@@ -1,0 +1,55 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    scheduler.alpha.kubernetes.io/critical-pod: ""
+  creationTimestamp: null
+  labels:
+    component: etcd
+    tier: control-plane
+  name: etcd1
+  namespace: kube-system
+spec:
+  containers:
+  - command:
+    - etcd
+    - --name 
+    - etcd1 
+    - --listen-client-urls
+    - http://0.0.0.0:2379 
+    - --advertise-client-urls
+    - http://10.37.129.7:2379 
+    - --data-dir
+    - /var/lib/etcd 
+    - --listen-peer-urls
+    - http://0.0.0.0:2380 
+    - --initial-advertise-peer-urls
+    - http://10.37.129.7:2380
+    - --initial-cluster
+    - etcd0=http://10.37.129.9:2380,etcd1=http://10.37.129.7:2380,etcd2=http://10.37.129.8:2380
+    - --initial-cluster-token
+    - my-etcd-token 
+    - --initial-cluster-state
+    - new
+    image: 10.211.55.2:5000/google_containers/etcd-amd64:3.1.10
+    livenessProbe:
+      failureThreshold: 8
+      httpGet:
+        host: 127.0.0.1
+        path: /health
+        port: 2379
+        scheme: HTTP
+      initialDelaySeconds: 15
+      timeoutSeconds: 15
+    name: etcd
+    resources: {}
+    volumeMounts:
+    - mountPath: /var/lib/etcd
+      name: etcd
+  hostNetwork: true
+  volumes:
+  - hostPath:
+      path: /var/lib/etcd
+      type: DirectoryOrCreate
+    name: etcd
+status: {}

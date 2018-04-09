@@ -1,0 +1,20 @@
+apiVersion: kubeadm.k8s.io/v1alpha1
+kind: MasterConfiguration
+api:
+  advertiseAddress: 10.37.129.9
+etcd:
+  endpoints:
+  - http://10.37.129.7:2379
+  - http://10.37.129.8:2379
+  - http://10.37.129.9:2379
+networking:
+  podSubnet: 192.168.0.0/16
+# apiServerCertSANs:
+  - 10.37.129.7
+  - 10.37.129.8
+  - 10.37.129.9
+  - 10.37.129.11
+imageRepository: 10.211.55.2:5000/google_containers
+kubernetesVersion: v1.9.0
+apiServerExtraArgs:
+  apiserver-count: "3"
